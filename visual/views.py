@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import os
 from django.shortcuts import render, redirect
-from win32com.client import Dispatch
+# from win32com.client import Dispatch
 import json
 from .charts import *
 try:
@@ -18,7 +18,8 @@ target_path = 'C:/Users/sas053/Desktop/dataset'
 file_name = 'test.csv'
 file_name_save = 'return_test.xlsx'
 
-DF = pd.read_csv('./test.csv')
+# DF = pd.read_csv('C:/Users/sas053/Desktop/test_date.csv')
+DF = pd.read_csv('test.csv')
 
 def read_data(source_path, target_path, file_name, file_name_save):
     source_file = source_path + file_name
@@ -137,18 +138,16 @@ def prepare_chart(data, #全部dataframe
         df_abs.columns = [label]  # 用一些设置变量为系列命名，准备作为图表标签
         df_gr = data.loc[df.index, form_dict['Feature2'][0]]
 
-        # print("%" * 50 + '\n', df_gr.columns)
-        # df_gr.columns = [form_dict['Feature2'][0]]
 
-        # df_gr = df_abs.pct_change(periods=4)  # 获取同比增长率
-        # df_gr.dropna(how='all', inplace=True)  # 删除没有同比增长率的行，也就是时间序列数据的最前面几行，他们没有同比
-        # df_gr.replace([np.inf, -np.inf, np.nan], '-', inplace=True)  # 所有分母为0或其他情况导致的inf和nan都转换为'-'
-        chart = echarts_stackbar(df=df_abs, #第一个维度
-                                 df_gr=df_gr, #第二个维度
-                                 line_name = form_dict['Feature2'][0])#第二维的列名
+        # chart = echarts_stackbar(df=df_abs, #第一个维度
+        #                          df_gr=df_gr, #第二个维度
+        #                          line_name = form_dict['Feature2'][0])#第二维的列名
+        chart = echarts_mybar(data, form_dict['Feature1'][0], form_dict['Feature2'][0])
         return chart.dump_options()  # 用json格式返回Pyecharts图表对象的全局设置
     else:
         return None
+
+
 def read_data(source_path, target_path, file_name, file_name_save):
 
     source_file = source_path + file_name
@@ -188,16 +187,16 @@ def query(request, data=DF):
         kpi = get_kpi(df, column)
         df = df.loc[:, [column]]
     box_df = pd.DataFrame(box)
-    print('================aaaaaaaaaaaaa', kpi)
     flag=0
     bar_total_trend = ""
     if kpi["df_mean"]!='N/A':
         # Pyecharts交互图表
-        bar_total_trend = json.loads(prepare_chart(data, df, 'bar_total_trend', form_dict))
+        # bar_total_trend = json.loads(prepare_chart(data, df, 'bar_total_trend', form_dict))
+        bar_total_trend = prepare_chart(data, df, 'bar_total_trend', form_dict)
         flag+=1
         # scatter_pic = echarts_scatter(data, form_dict)
-        # scatter_pic = json.loads(scatter_pic.dump_options())
-        # print('=============scatter pic is:=============', '\n', scatter_pic, '\n')
+        bar_total_trend = json.loads(bar_total_trend)
+        print('=============bar_total_trend:=============', '\n', bar_total_trend, '\n')
 
     context = {
         "df_mean": kpi["df_mean"],
@@ -216,8 +215,6 @@ def get_kpi(df, column, axis = 0):
 
     df = df.loc[:, [column]]
 
-    print(df)
-    print(df.mean(axis))
     try:
         df_mean = df.mean(axis)[0]
         df_std = df.std(axis)[0]
@@ -292,43 +289,6 @@ def choose_file(request):
     return file_list
 
 
-# def query(request, df = DF):
-#     """
-#     query方法要实现以下后续功能:
-#
-#     a. 解析前端参数到理想格式
-#     b. 根据前端参数数据拼接SQL并用Pandas读取
-#     c. Pandas读取数据后, 将前端选择的DIMENSION作为pivot_table方法的column参数
-#     d. 返回Json格式的结果
-#     """
-#     form_dict = dict(six.iterlists(request.GET))
-#
-#     print('\nrequest.GET:\n', request.GET, '\n')
-#     print('*'*50, '\nobtained dictionary:\n', form_dict, '\n')
-#     print('*'*50)
-#
-#     # print('\nget some elements:\n', form_dict['Feature1'][0])
-#     # df = pd.read_csv('./Crush_yeah.csv') #将sql语句结果读取至Pandas Dataframe
-#
-#     df = df.iloc[0:30]
-#
-#     # kpi = get_kpi(df)
-#
-#     if form_dict:
-#         column = form_dict['Feature1'][0]
-#         kpi = get_kpi(df, column)
-#         df = df.loc[:, [column]]
-#
-#
-#     context = {
-#         "df_mean": kpi["df_mean"],
-#         "df_std": kpi["df_std"],
-#         "df_median": kpi["df_median"],
-#         'data': df.to_html(),
-#         'data_': box_df.to_html(),
-#     }
-#     return HttpResponse(json.dumps(context, ensure_ascii=False),
-#                         content_type="application/json charset=utf-8")  # 返回结果必须是json格式
 
 
 def showdata(request, df=DF):
@@ -347,11 +307,9 @@ def index(request):
     mselect_dict = {}
 
     form_dict = dict(six.iterlists(request.GET))
-    print('2222222222222222222222222222222222222222222222222222222222')
-    print('*'*50, '\nobtained dictionary:\n', form_dict, '\n')
-    print('*'*50)
+
     # global df
-    # df = pd.read_csv('./Crush_yeah.csv') #将sql语句结果读取至Pandas Dataframe
+
     # df = read_data(source_path, target_path, file_name, file_name_save)
     df = DF.iloc[0:50]
 
@@ -376,9 +334,7 @@ def blog(request):
     mselect_dict = {}
 
     form_dict = dict(six.iterlists(request.GET))
-    print('111111111111111111111111111111111111111111111111111111111111')
-    print('*'*50, '\nobtained dictionary:\n', form_dict, '\n')
-    print('*'*50)
+
     # global df
     # df = pd.read_csv('./Crush_yeah.csv') #将sql语句结果读取至Pandas Dataframe
     # df = read_data(source_path, target_path, file_name, file_name_save)

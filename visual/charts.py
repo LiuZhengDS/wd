@@ -1,16 +1,25 @@
 from pyecharts.charts import Line, Bar, Scatter
 from pyecharts import options as opts
 from pyecharts.faker import Faker
+import numpy as np
+def echarts_mybar(df, x, y):
+    df = df.iloc[:30, :]
+    bar = (
+        Bar()
+        .add_xaxis(np.array(df[x]).tolist())
+        .add_yaxis("纵坐标名字", np.array(df[y]).tolist())
+        .set_global_opts(title_opts=opts.TitleOpts(title="主标题", subtitle="副标题"))
+    )
+    print('=============bar type is:=============', '\n', type(bar), '\n')
+
+    return bar
+
 
 def echarts_stackbar(df,  # 传入数据df，应该是一个行索引为date的时间序列面板数据
              df_gr=None,  # 传入同比增长率df，可以没有
              datatype='ABS',  # 主Y轴形式是绝对值，增长率还是份额，用来确定一些标签格式，默认为绝对值
              line_name=None,
              ) -> Bar:
-
-
-
-
     axislabel_format = '{value}'  # 主Y轴默认格式
     max = df[df>0].sum(axis=1).max()  # 主Y轴默认最大值
     min = df[df<=0].sum(axis=1).min()  # 主Y轴默认最小值
