@@ -8,7 +8,9 @@
 
 <!-- 写入 base.html 中定义的 body content -->
 {% block body %}
-
+<div class="ui buttons" style="display:block;margin:0 auto">
+    <input class="ui green button" type='button' id='plot_next' style="display:block;margin:0 auto" value="next"/>
+</div>
 <!-- 因为semantic ui的特性需要在body部分写个pusher避免内容被顶部导航栏遮挡 -->
 <div id="HomePage" class="pusher" style="padding-top:50px" data-tab="HomePage">
     {{ data }}
@@ -23,6 +25,7 @@
             {% block display %}{% endblock display %}
         </div>
     </div>
-</div></div>
+</div>
+</div>
 
 {% endblock body %}

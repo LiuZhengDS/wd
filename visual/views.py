@@ -174,20 +174,29 @@ def plot(request):
     return HttpResponse(json.dumps(context, ensure_ascii=False),
                         content_type="application/json charset=utf-8")
 
-def index(request):
-    mselect_dict = {}
+global pth
+global DF
+pth = 'C:/Users/1000300246/Desktop/'
+def index(request, pth=pth):
     form_dict = dict(six.iterlists(request.GET))
-    # df = read_data(source_path, target_path, file_name, file_name_save)
-    df = DF.iloc[0:50]
-    dct = columns2dictionary(df)
+    file_list = []
+    file_dct = {}
+    for file in os.listdir(pth):
+
+        if os.path.splitext(file)[1] in ['.sas7bdat', '.jmp', '.csv']:
+
+            file_list.append(file)
+
+    dct = {file_name: file_name for file_name in file_list}
     for key, value in dct.items():
-        mselect_dict[key] = {}
-        mselect_dict[key]['select'] = value
-        mselect_dict[key]['options'] = get_distinct_list(df, value) # 以后可以后端通过列表为每个多选控件传递备选项
+
+        file_dct[key] = {}
+
+        file_dct[key]['select'] = value
     context = {
-        'mselect_dict': mselect_dict,
+        'file_dct': file_dct
     }
-    return render(request, 'visual/display.html', context)
+    return render(request, 'visual/file.html', context)
 
 def blog(request):
     mselect_dict = {}
@@ -202,3 +211,33 @@ def blog(request):
         'mselect_dict': mselect_dict,
     }
     return render(request, 'visual/blog_main_display.html', context)
+
+def choose_file_name(request):
+
+    mselect_dict = {}
+    file_name = request.POST.get("file_name")
+    print("==========", file_name, "==============")
+
+    DF = pd.read_csv(pth + file_name)
+    df = DF.iloc[0:50]
+    dct = columns2dictionary(df)
+    for key, value in dct.items():
+        mselect_dict[key] = {}
+        mselect_dict[key]['select'] = value
+        mselect_dict[key]['options'] = get_distinct_list(df, value)  # 以后可以后端通过列表为每个多选控件传递备选项
+    context = {
+        'mselect_dict': mselect_dict,
+    }
+    return render(request, 'visual/display.html', context)
+
+# def choose_file(request):
+#     file_list_dict = dict(six.iterlists(request.GET))
+#     selected_file = file_list_dict['file_selection'][0]
+#     print(selected_file)
+#     selected_file_dct = {
+#
+#         'file_selection': selected_file,
+#     }
+#     return HttpResponse(json.dumps(selected_file_dct, ensure_ascii=False),
+#
+#                         content_type="application/json charset=utf-8")
