@@ -8,19 +8,61 @@
 
 <!-- 写入 base.html 中定义的 body content -->
 {% block body %}
+<form action="/visual/choose_file_name" method="post">
+    {% csrf_token %}
+    <div class="center_box">
+        <span class="baincheng-sp">
+            <label>请选择数据文件</label>
+        </span>
+    </div>
 
-<div class="ui buttons" style="display:block;margin:0 auto">
-    <input class="ui green button" type='button' id='plot_next' style="display:block;margin:0 auto" value="next"/>
-</div>
+    <div class="field"><div class="fields"></div>
 
-<!-- 此处为居中的选择栏 -->
+                <div class="fields">
+
+                    <div class="fifteen wide field">
+
+                        <select name="file_name" id="file_selection" class="ui fluid search dropdown">
+
+                            <!-- 默认hidden显示为File Selection -->
+
+                            <option value="">File Selection</option>
+
+                            {% for key, value in file_dct.items %}
+
+                                    <!-- <option value="{{ value.select }}" selected>{{ key }}</option> -->
+
+                                    <option value="{{ value.select }}">{{ key }}</option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+    </div>
+<!--    <div class="field">-->
+<!--        <div class="fields"></div>-->
+<!--        <div class="fields">-->
+<!--            <select class="select" name="file_name" style="text-align: center;text-align-last: center;">-->
+<!--                <option value="1">1</option>-->
+<!--                <option value="2">2</option>-->
+<!--                <option value="3">3</option>-->
+<!--                <option value="4">4</option>-->
+<!--            </select>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="ui buttons" style="display:block;margin:0 auto">
+        <input class="ui green button" type='submit' id='plot_next' style="display:block;margin:0 auto" value="next"/>
+    </div>
+</form>
+
+<!-- 因为semantic ui的特性需要在body部分写个pusher避免内容被顶部导航栏遮挡 -->
 <div id="HomePage" class="pusher" style="padding-top:50px" data-tab="HomePage">
-    {{ data }}
-    <body>
-        <div class="main">
-            <h1>MAIN</h1>
-        </div>
-    </body>
-</div></div>
+
+</div>
+</div>
 
 {% endblock body %}

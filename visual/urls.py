@@ -9,7 +9,7 @@ urlpatterns = [
     path(r'blog', views.blog, name = 'blog'),
     path(r'showdata', views.showdata, name="showdata"),
     path(r'plot', views.plot, name="plot"),
-    path(r'choose_file', views.choose_file, name="choose_file"),
+    path(r'choose_file_name', views.choose_file_name, name="choose_file_name")
 ]
 
 

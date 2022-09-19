@@ -18,7 +18,6 @@ def echarts_mybar(df, x, y):
                          range_end=80,  # 显示区域的结束位置，默认是80
                          orient='horizontal'  ##缩放区域空值条所放的位置
                          )
-
         )
         .set_series_opts(label_opts=opts.LabelOpts(position='insideTop', color='white', font_size=12, is_show=False))
     )
