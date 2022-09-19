@@ -65,28 +65,6 @@
                 <div class="visible content">维度选择</div>
                 <div class="hidden content">确认</div>
             </div>
-            <h3 class="ui header" id="select_data_file">数据文件选择</h3>
-            <div class="field"><div class="fields"></div>
-                <div class="fields">
-                    <div class="fifteen wide field">
-                        <select name="file_selection" id="file_selection" class="ui fluid multiple search dropdown">
-                            <!-- 默认hidden显示为Feature Selection -->
-                            <option value="">File Selection</option>
-                            {% for key, value in mselect_dict.items %}
-                                    <!-- <option value="{{ value.select }}" selected>{{ key }}</option> -->
-                                    <option value="{{ value.select }}">{{ key }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="ui blue animated button" tabindex="0" id='select_data_file_'>
-                <div class="visible content">数据文件选择</div>
-                <div class="hidden content">确认</div>
-            </div>
-            <div class="ui buttons">
-                <input class="ui blue button" type='button' id='AJAX_get_1' value="选择"/>
-            </div>
         </div>
     </div>
 </div>

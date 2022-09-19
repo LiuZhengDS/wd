@@ -15,9 +15,27 @@ import time
 root_path = './'
 sourth_path = 'C:/Users/1000300246/Desktop/'
 target_path = 'C:/Users/1000300246/Desktop/'
-file_name = 'test_date.csv'
+# file_name = 'test_date.csv'
+
+global pth
 global DF
-DF = pd.read_csv(sourth_path + file_name)
+def choose_file_name(request):
+    global DF
+    mselect_dict = {}
+    file_name = request.POST.get("file_name")
+    print("==========", file_name, "==============")
+
+    DF = pd.read_csv(pth + file_name)
+    df = DF.iloc[0:50]
+    dct = columns2dictionary(df)
+    for key, value in dct.items():
+        mselect_dict[key] = {}
+        mselect_dict[key]['select'] = value
+        mselect_dict[key]['options'] = get_distinct_list(df, value)  # 以后可以后端通过列表为每个多选控件传递备选项
+    context = {
+        'mselect_dict': mselect_dict,
+    }
+    return render(request, 'visual/display.html', context)
 
 def test_time():
     since = time.time()
@@ -119,23 +137,20 @@ def search(request, column, kw, df):
     return HttpResponse(json.dumps(res, ensure_ascii=False), content_type="application/json charset=utf-8") # 返回结果必须是json格式
 
 
-def choose_file(request):
-    file_list_dict = dict(six.iterlists(request.GET))
-    file_list = os.path()
-    return file_list
 
 
-def showdata(request, df=DF):
+
+def showdata(request):
     data = dict(six.iterlists(request.GET))
     con = {
-        'alldata': df.to_html(),
+        'alldata': DF.iloc[:30, :].to_html(),
     }
     return HttpResponse(json.dumps(con, ensure_ascii=False),
                         content_type="application/json charset=utf-8")
 
-def query(request, data=DF):
+def query(request):
     form_dict = dict(six.iterlists(request.GET))
-    df = data.iloc[0:30]
+    df = DF.iloc[0:30]
     box = []
     if form_dict:
         global x_feature, y_feature
@@ -174,9 +189,9 @@ def plot(request):
     return HttpResponse(json.dumps(context, ensure_ascii=False),
                         content_type="application/json charset=utf-8")
 
-global pth
-global DF
+
 pth = 'C:/Users/1000300246/Desktop/'
+
 def index(request, pth=pth):
     form_dict = dict(six.iterlists(request.GET))
     file_list = []
@@ -211,33 +226,3 @@ def blog(request):
         'mselect_dict': mselect_dict,
     }
     return render(request, 'visual/blog_main_display.html', context)
-
-def choose_file_name(request):
-
-    mselect_dict = {}
-    file_name = request.POST.get("file_name")
-    print("==========", file_name, "==============")
-
-    DF = pd.read_csv(pth + file_name)
-    df = DF.iloc[0:50]
-    dct = columns2dictionary(df)
-    for key, value in dct.items():
-        mselect_dict[key] = {}
-        mselect_dict[key]['select'] = value
-        mselect_dict[key]['options'] = get_distinct_list(df, value)  # 以后可以后端通过列表为每个多选控件传递备选项
-    context = {
-        'mselect_dict': mselect_dict,
-    }
-    return render(request, 'visual/display.html', context)
-
-# def choose_file(request):
-#     file_list_dict = dict(six.iterlists(request.GET))
-#     selected_file = file_list_dict['file_selection'][0]
-#     print(selected_file)
-#     selected_file_dct = {
-#
-#         'file_selection': selected_file,
-#     }
-#     return HttpResponse(json.dumps(selected_file_dct, ensure_ascii=False),
-#
-#                         content_type="application/json charset=utf-8")
