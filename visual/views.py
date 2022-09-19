@@ -12,7 +12,7 @@ except ImportError:
     from django.utils import six
 import time
 
-root_path = './'
+ROOT_PATH = './'
 sourth_path = 'C:/Users/sas053/Desktop/dataset'
 target_path = 'C:/Users/sas053/Desktop/dataset'
 file_name = 'test.csv'
@@ -20,7 +20,7 @@ file_name_save = 'return_test.xlsx'
 
 since = time.time()
 global DF
-DF = pd.read_csv('./1024.csv')
+DF = pd.read_csv('./100.csv')
 print('it costs: ', time.time() - since, 's to load the file')
 print(DF.memory_usage().sum()/(1024**2), 'MB')
 since = time.time()
@@ -126,9 +126,16 @@ def search(request, column, kw, df):
 
 
 def choose_file(request):
+
     file_list_dict = dict(six.iterlists(request.GET))
-    file_list = os.path()
-    return file_list
+    selected_file = file_list_dict['file_selection'][0]
+    print(selected_file)
+    selected_file_dct = {
+        'file_selection': selected_file,
+    }
+
+    return HttpResponse(json.dumps(selected_file_dct, ensure_ascii=False),
+                        content_type="application/json charset=utf-8")
 
 
 def showdata(request, df=DF):
@@ -140,20 +147,28 @@ def showdata(request, df=DF):
                         content_type="application/json charset=utf-8")
 
 def query(request, data=DF):
+
     form_dict = dict(six.iterlists(request.GET))
+    print(form_dict, 11111111111111111)
     df = data.iloc[0:30]
     box = []
+
     if form_dict:
         global x_feature, y_feature
+        print(form_dict['Feature1'], form_dict, form_dict['Feature1'][0])
         x_feature = form_dict['Feature1'][0]
         y_feature = form_dict['Feature2'][0]
         box = [x_feature, y_feature]
         multi_con = form_dict['Feature_opt[]']
+
         for i in multi_con:
             box.append(i)
+
         kpi = get_kpi(df, x_feature)
         df = df.loc[:, [x_feature]]
+
     box_df = pd.DataFrame(box)
+
     context = {
         "df_mean": kpi["df_mean"],
         "df_std": kpi["df_std"],
@@ -161,6 +176,7 @@ def query(request, data=DF):
         'data': df.to_html(),
         'data_': box_df.to_html(),
     }
+
     return HttpResponse(json.dumps(context, ensure_ascii=False),
                         content_type="application/json charset=utf-8")  # 返回结果必须是json格式
 
@@ -180,18 +196,36 @@ def plot(request):
     return HttpResponse(json.dumps(context, ensure_ascii=False),
                         content_type="application/json charset=utf-8")
 
-def index(request):
+def index(request, pth = ROOT_PATH):
+
     mselect_dict = {}
+    file_list = []
+    file_dct = {}
     form_dict = dict(six.iterlists(request.GET))
+
     # df = read_data(source_path, target_path, file_name, file_name_save)
     df = DF.iloc[0:50]
     dct = columns2dictionary(df)
+
     for key, value in dct.items():
         mselect_dict[key] = {}
         mselect_dict[key]['select'] = value
         mselect_dict[key]['options'] = get_distinct_list(df, value) # 以后可以后端通过列表为每个多选控件传递备选项
+    # file_list = os.path(pth)
+    # 如果根路径下的文件以csv(, sas, jmp)结尾, 则该文件纳入目标文件list, 否则跳过不予考虑
+    for file in os.listdir(pth):
+        if os.path.splitext(file)[1] in ['.sas7bdat', '.jmp', '.csv']:
+            file_list.append(file)
+
+    dct = {file_name: file_name for file_name in file_list}
+
+    for key, value in dct.items():
+        file_dct[key] = {}
+        file_dct[key]['select'] = value
+
     context = {
         'mselect_dict': mselect_dict,
+        'file_dct': file_dct,
     }
     return render(request, 'visual/display.html', context)
 
