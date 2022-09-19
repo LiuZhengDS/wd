@@ -13,20 +13,14 @@
     <input class="ui green button" type='button' id='plot_next' style="display:block;margin:0 auto" value="next"/>
 </div>
 
-<!-- 因为semantic ui的特性需要在body部分写个pusher避免内容被顶部导航栏遮挡 -->
+<!-- 此处为居中的选择栏 -->
 <div id="HomePage" class="pusher" style="padding-top:50px" data-tab="HomePage">
     {{ data }}
-    <div class="ui celled grid">
-        <!-- 左边3/16为filter页面, include -->
-        <div class="three wide column">
-            {% include 'visual/filter.html' %}
+    <body>
+        <div class="main">
+            <h1>MAIN</h1>
         </div>
-
-        <!-- 右边13/16为display页面, 预留block -->
-        <div class="thirteen wide column">
-            {% block display %}{% endblock display %}
-        </div>
-    </div>
+    </body>
 </div></div>
 
 {% endblock body %}
