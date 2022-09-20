@@ -102,7 +102,7 @@
         };
 
         $.ajax({
-            url: '{% url 'visual:choose_file' %}',
+            url: '{% url 'visual:index' %}',
             type: 'GET',
             data: file_data,
             success: function(ret) {
