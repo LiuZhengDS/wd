@@ -19,13 +19,16 @@ target_path = 'C:/Users/1000300246/Desktop/'
 
 global pth
 global DF
+global file_name
 def choose_file_name(request):
-    global DF
+    global DF, file_name
     mselect_dict = {}
-    file_name = request.POST.get("file_name")
+    if request.POST.get("file_name"):
+        file_name = request.POST.get("file_name")
+        DF = pd.read_csv(pth + file_name)
     print("==========", file_name, "==============")
 
-    DF = pd.read_csv(pth + file_name)
+
     df = DF.iloc[0:50]
     dct = columns2dictionary(df)
     for key, value in dct.items():
@@ -36,6 +39,17 @@ def choose_file_name(request):
         'mselect_dict': mselect_dict,
     }
     return render(request, 'visual/display.html', context)
+
+def visualization(request):
+    data_type = {
+        'string' : 'str',
+        'int' : 'int',
+        'float': 'float',
+    }
+    context = {
+        'data_type': data_type,
+    }
+    return render(request, 'visual/display_plot.html', context)
 
 def test_time():
     since = time.time()
@@ -137,9 +151,6 @@ def search(request, column, kw, df):
     return HttpResponse(json.dumps(res, ensure_ascii=False), content_type="application/json charset=utf-8") # 返回结果必须是json格式
 
 
-
-
-
 def showdata(request):
     data = dict(six.iterlists(request.GET))
     con = {
@@ -164,6 +175,7 @@ def query(request):
         df = df.loc[:, [x_feature]]
     box_df = pd.DataFrame(box)
     context = {
+        "x_feature": x_feature,
         "df_mean": kpi["df_mean"],
         "df_std": kpi["df_std"],
         "df_median": kpi["df_median"],
@@ -172,14 +184,16 @@ def query(request):
     }
     return HttpResponse(json.dumps(context, ensure_ascii=False),
                         content_type="application/json charset=utf-8")  # 返回结果必须是json格式
-
+global plot_type
 def plot(request):
-    type = list(dict(six.iterlists(request.GET)).keys())[0]
-    if type == 'Bar':
-        chart = echarts_mybar(DF, x_feature, y_feature)
-    elif type == 'Scatter':
+    global plot_type
+    plot_type = list(dict(six.iterlists(request.GET)).keys())[0]
+    if plot_type == 'Bar':
+        chart = echarts_mybar(DF, x_feature, y_feature, 0, None, None)
+        print("arrive bar")
+    elif plot_type == 'Scatter':
         chart = echarts_myscatter(DF, x_feature, y_feature)
-    elif type == 'Line':
+    elif plot_type == 'Line':
         chart = echarts_myline(DF, x_feature, y_feature)
     chart = chart.dump_options()
     total_trend = json.loads(chart)
@@ -189,6 +203,27 @@ def plot(request):
     return HttpResponse(json.dumps(context, ensure_ascii=False),
                         content_type="application/json charset=utf-8")
 
+def plot_change_scale(request):
+    data = dict(six.iterlists(request.GET))
+    x_axis_min = data['x_axis_min']
+    x_axis_max = data['x_axis_max']
+    data_type = data['data_type']
+    if plot_type == 'Bar':
+        chart = echarts_mybar(DF, x_feature, y_feature, 1, x_axis_min, x_axis_max)
+    chart = chart.dump_options()
+    total_trend = json.loads(chart)
+    context = {
+        'total_trend': total_trend,
+    }
+    return HttpResponse(json.dumps(context, ensure_ascii=False),
+                        content_type="application/json charset=utf-8")
+
+def plot_change(request):
+    data = request.GET
+    # data = dict(six.iterlists(request.GET))
+    print('=======', data, '========')
+    return HttpResponse(1, json.dumps(ensure_ascii=False),
+                        content_type="application/json charset=utf-8")
 
 pth = 'C:/Users/1000300246/Desktop/'
 
@@ -213,16 +248,5 @@ def index(request, pth=pth):
     }
     return render(request, 'visual/file.html', context)
 
-def blog(request):
-    mselect_dict = {}
-    form_dict = dict(six.iterlists(request.GET))
-    df = DF.iloc[0:50]
-    dct = columns2dictionary(df)
-    for key, value in dct.items():
-        mselect_dict[key] = {}
-        mselect_dict[key]['select'] = value
-        mselect_dict[key]['options'] = get_distinct_list(df, value) # 以后可以后端通过列表为每个多选控件传递备选项
-    context = {
-        'mselect_dict': mselect_dict,
-    }
-    return render(request, 'visual/blog_main_display.html', context)
+
+
