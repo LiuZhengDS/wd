@@ -1,22 +1,22 @@
 <div class="ui inverted three menu" id = myDIV>
 <!-- <div class="ui pointing menu"> -->
     <div class="ui container">
-        <a class="red item active" data-tab="Monitoring" href={% url "visual:index" %} >&nbsp;&nbsp;&nbsp;&nbsp;Monitoring&nbsp;&nbsp;&nbsp;&nbsp;</a>
-        <a class="red item" data-tab="DataPreprocess" href={% url "preprocess:index" %} >&nbsp;&nbsp;&nbsp;&nbsp;Data Preprocess&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        <a class="red item" data-tab="Monitoring" href={% url "visual:index" %} >&nbsp;&nbsp;&nbsp;&nbsp;Monitoring&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        <a class="red item active" data-tab="DataPreprocess" href={% url "preprocess:index" %} >&nbsp;&nbsp;&nbsp;&nbsp;Data Preprocess&nbsp;&nbsp;&nbsp;&nbsp;</a>
         <a class="red item" data-tab="blogs" href={% url "blog:index" %} >&nbsp;&nbsp;&nbsp;&nbsp;Algorithm Blogs&nbsp;&nbsp;&nbsp;&nbsp;</a>
     </div>
 </div>
 
 
-<!-- 
-<script>
+
+<!-- <script>
     // Add active class to the current button (highlight it)
     var header = document.getElementById("myDIV");
     var btns = header.getElementsByClassName("red item");
     for (var i = 0; i < btns.length; i++) {
       btns[i].addEventListener("click", function() {
       var current = document.getElementsByClassName("active");
-    //   document.write(current)3
+    //   document.write(current)
       current[0].className = current[0].className.replace(" active", "");
       this.className += " active";
       });

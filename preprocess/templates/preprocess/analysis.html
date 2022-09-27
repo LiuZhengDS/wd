@@ -1,28 +1,30 @@
 <!-- extends表明此页面继承自 base.html 文件 -->
-{% extends "visual/base.html" %}
+{% extends "preprocess/base.html" %}
 
-<div class="ui tab segment active" data-tab="Algorithm">
+<div class="ui tab segment active" data-tab="HomePage">
 
 <!-- 隐藏分隔条 -->
 <div class="ui hidden divider"></div>
-
+{% block guide %}
+    {% include 'preprocess/process.html' %}
+{% endblock guide %}
 <!-- 写入 base.html 中定义的 body content -->
-
 {% block body %}
+
 <!-- 因为semantic ui的特性需要在body部分写个pusher避免内容被顶部导航栏遮挡 -->
-<div id="Algorithm" class="pusher" style="padding-top:50px" data-tab="Algorithm">
-    {{ data }}
+<div id="HomePage" class="pusher" style="padding-top:50px" data-tab="HomePage">
     <div class="ui celled grid">
         <!-- 左边3/16为filter页面, include -->
-        <div class="six wide column">
-            {% include 'visual/filter.html' %}
+        <div class="three wide column">
+            {% include 'preprocess/filter.html' %}
         </div>
 
         <!-- 右边13/16为display页面, 预留block -->
-        <div class="ten wide column">
-            {% block blog_main_display %}{% endblock blog_main_display %}
+        <div class="thirteen wide column">
+            {% block display %}{% endblock display %}
         </div>
     </div>
-</div></div>
+</div>
+</div>
 
-{% endblock body %}
+{% endblock %}

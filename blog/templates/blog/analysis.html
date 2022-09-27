@@ -1,12 +1,12 @@
 <!-- extends表明此页面继承自 base.html 文件 -->
-{% extends "visual/base.html" %}
+{% extends "blog/base.html" %}
 
-<div class="ui tab segment" data-tab="HomePage">
+<div class="ui tab segment active" data-tab="HomePage">
 
 <!-- 隐藏分隔条 -->
 <div class="ui hidden divider"></div>
 {% block guide %}
-    {% include 'visual/process.html' %}
+    {% include 'blog/process.html' %}
 {% endblock guide %}
 <!-- 写入 base.html 中定义的 body content -->
 {% block body %}
@@ -16,7 +16,7 @@
     <div class="ui celled grid">
         <!-- 左边3/16为filter页面, include -->
         <div class="three wide column">
-            {% include 'visual/filter.html' %}
+            {% include 'blog/filter.html' %}
         </div>
 
         <!-- 右边13/16为display页面, 预留block -->

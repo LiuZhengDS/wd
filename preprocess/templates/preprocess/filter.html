@@ -74,7 +74,7 @@
     $("#show_data").click(function (event){
         event.preventDefault();
         $.ajax({
-            url: '{% url 'visual:showdata' %}',
+            url: '{% url 'preprocess:showdata' %}',
             type: 'GET',
             success: function(ret) {
                 $("#alldata").html(ret['alldata'])
@@ -95,7 +95,7 @@
         };
 
         $.ajax({
-            url: '{% url 'visual:index' %}',
+            url: '{% url 'preprocess:index' %}',
             type: 'GET',
             data: file_data,
             success: function(ret) {
@@ -126,7 +126,7 @@
             "Feature_opt": $("#Feature_opt").val(),
         };
         $.ajax({
-            url: '{% url 'visual:query' %}',
+            url: '{% url 'preprocess:query' %}',
             type: 'GET',
             data: form_data,
             success: function(ret) {

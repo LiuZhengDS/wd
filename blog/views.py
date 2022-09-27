@@ -1,12 +1,11 @@
 from urllib import request
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from sqlalchemy import create_engine
 import pandas as pd
 import numpy as np
 import os
 from django.shortcuts import render, redirect
 import json
-from .charts import *
 try:
     import six
 except ImportError:
@@ -18,22 +17,12 @@ sourth_path = 'C:/Users/1000300246/Desktop/'
 target_path = 'C:/Users/1000300246/Desktop/'
 # file_name = 'test_date.csv'
 
-
+global pth
 global DF
-global buffer
 def choose_file_name(request):
-
     global DF
-    global buffer, file_name
     mselect_dict = {}
     file_name = request.POST.get("file_name")
-     
-    if not file_name and 'buffer' in globals().keys():
-        file_name = buffer
-    buffer = file_name
-    print('file_name: ', file_name)
-    print('buffer: ', buffer)
-
     print("==========", file_name, "==============")
 
     if file_name:
@@ -48,11 +37,7 @@ def choose_file_name(request):
     context = {
         'mselect_dict': mselect_dict,
     }
-
-    print('buffer' in locals().keys(), globals().keys()) 
-    return render(request, 'visual/display.html', context)
-
-
+    return render(request, 'blog/display.html', context)
 
 def test_time():
     since = time.time()
@@ -153,6 +138,10 @@ def search(request, column, kw, df):
         }
     return HttpResponse(json.dumps(res, ensure_ascii=False), content_type="application/json charset=utf-8") # 返回结果必须是json格式
 
+
+
+
+
 def showdata(request):
     data = dict(six.iterlists(request.GET))
     print('data is:', data)
@@ -194,26 +183,6 @@ def query(request):
     return HttpResponse(json.dumps(context, ensure_ascii=False),
                         content_type="application/json charset=utf-8")  # 返回结果必须是json格式
 
-def plot(request):
-    print(dict(six.iterlists(request.GET)).keys())
-    total_trend = {}
-    if dict(six.iterlists(request.GET)):
-        type = list(dict(six.iterlists(request.GET)).keys())[0]
-        if type == 'Bar':
-            chart = echarts_mybar(DF, x_feature, y_feature)
-        elif type == 'Scatter':
-            chart = echarts_myscatter(DF, x_feature, y_feature)
-        elif type == 'Line':
-            chart = echarts_myline(DF, x_feature, y_feature)
-        chart = chart.dump_options()
-        total_trend = json.loads(chart)
-    print(total_trend)
-    context = {
-        'total_trend': total_trend,
-    }
-    return HttpResponseRedirect('http://127.0.0.1:8000/visual/choose_file_name')
-
-
 pth = './'
 
 def index(request, pth=pth):
@@ -236,7 +205,7 @@ def index(request, pth=pth):
         'file_dct': file_dct
     }
 
-    return render(request, 'visual/file.html', context)
+    return render(request, 'blog/file.html', context)
 
 def blog(request):
     mselect_dict = {}
@@ -250,4 +219,4 @@ def blog(request):
     context = {
         'mselect_dict': mselect_dict,
     }
-    return render(request, 'visual/blog_main_display.html', context)
+    return render(request, 'blog/blog_main_display.html', context)
