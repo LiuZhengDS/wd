@@ -60,6 +60,7 @@
                     </div>
                 </div>
             </div>
+            
             <div class="ui blue animated button" tabindex="0" id='AJAX_get'>
                 <div class="visible content">维度选择</div>
                 <div class="hidden content">确认</div>
@@ -67,6 +68,7 @@
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
     $("#show_data").click(function (event){
         event.preventDefault();
@@ -82,14 +84,37 @@
         });
     })
 </script>
+
+<script type="text/javascript">
+    $("#choose_file_button").click(function (event){
+        event.preventDefault();
+        alert('所选文件为: ' + $("#file_selection").val());
+        var file_data = {
+            "file_selection": $("#file_selection").val(),
+        };
+
+        $.ajax({
+            url: '{% url 'visual:index' %}',
+            type: 'GET',
+            data: file_data,
+            success: function(ret) {
+                $("#file_selection").html(ret["file_selection"]);
+            },
+            error: function() {
+                console.log('failure')
+            }
+        });
+    })
+</script>
+
 <script type="text/javascript">
     $("#AJAX_get").click(function (event) {
         event.preventDefault();
         alert('所选维度为: ' + $("#Feature1").val() + ' 和 ' + $("#Feature2").val() +
                     '\n' + '所选辅助维度为: ' + $("#Feature_opt").val());
-<!--        chart.showLoading({-->
-<!--          text : '正在加载数据'-->
-<!--        });-->
+            // chart.showLoading({
+            //   text : '正在加载数据'
+            // });
         var dimmer = $("#dimmer");
                     dimmer.attr('class', 'ui active dimmer'); // 点击筛选按钮后dimmer变成active
                     dimmer.children('div').remove(); // 删除初始化文字

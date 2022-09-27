@@ -1,3 +1,4 @@
+from urllib import request
 from django.http import HttpResponse
 from sqlalchemy import create_engine
 import pandas as pd
@@ -153,6 +154,7 @@ def search(request, column, kw, df):
 
 def showdata(request):
     data = dict(six.iterlists(request.GET))
+    print('data is:', data)
     con = {
         'alldata': DF.iloc[:30, :].to_html(),
     }
@@ -163,17 +165,23 @@ def query(request):
     form_dict = dict(six.iterlists(request.GET))
     df = DF.iloc[0:30]
     box = []
+
     if form_dict:
         global x_feature, y_feature
+        print(form_dict['Feature1'], form_dict, form_dict['Feature1'][0])
         x_feature = form_dict['Feature1'][0]
         y_feature = form_dict['Feature2'][0]
         box = [x_feature, y_feature]
         multi_con = form_dict['Feature_opt[]']
+
         for i in multi_con:
             box.append(i)
+
         kpi = get_kpi(df, x_feature)
         df = df.loc[:, [x_feature]]
+
     box_df = pd.DataFrame(box)
+
     context = {
         "x_feature": x_feature,
         "df_mean": kpi["df_mean"],
@@ -182,6 +190,7 @@ def query(request):
         'data': df.to_html(),
         'data_': box_df.to_html(),
     }
+
     return HttpResponse(json.dumps(context, ensure_ascii=False),
                         content_type="application/json charset=utf-8")  # 返回结果必须是json格式
 global plot_type
@@ -228,7 +237,7 @@ def plot_change(request):
 pth = 'C:/Users/1000300246/Desktop/'
 
 def index(request, pth=pth):
-    form_dict = dict(six.iterlists(request.GET))
+    # form_dict = dict(six.iterlists(request.GET))
     file_list = []
     file_dct = {}
     for file in os.listdir(pth):
@@ -246,6 +255,7 @@ def index(request, pth=pth):
     context = {
         'file_dct': file_dct
     }
+
     return render(request, 'visual/file.html', context)
 
 
