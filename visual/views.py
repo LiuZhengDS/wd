@@ -204,9 +204,13 @@ def query(request):
     return HttpResponse(json.dumps(context, ensure_ascii=False),
                         content_type="application/json charset=utf-8")  # 返回结果必须是json格式
 global plot_type
+
 def plot(request):
     global plot_type
-    plot_type = list(dict(six.iterlists(request.GET)).keys())[0]
+    total_trend = {}
+    plot_type = ''
+    if dict(six.iterlists(request.GET)):
+        plot_type = list(dict(six.iterlists(request.GET)).keys())[0]
     if plot_type == 'Bar':
         chart = echarts_mybar(DF, x_feature, y_feature, 0, None, None)
         print("arrive bar")
@@ -214,12 +218,20 @@ def plot(request):
         chart = echarts_myscatter(DF, x_feature, y_feature)
     elif plot_type == 'Line':
         chart = echarts_myline(DF, x_feature, y_feature)
-    chart = chart.dump_options()
-    total_trend = json.loads(chart)
-    context = {
-        'total_trend': total_trend,
-    }
-    return HttpResponseRedirect('http://127.0.0.1:8000/visual/choose_file_name')
+    try:
+        chart = chart.dump_options()
+        total_trend = json.loads(chart)
+    
+        context = {
+            'total_trend': total_trend,
+        }
+        return HttpResponse(json.dumps(context, ensure_ascii=False),
+                        content_type="application/json charset=utf-8")
+    except:
+        context = {
+            'total_trend': total_trend,
+        }
+        return render(request, 'visual/display_plot.html', context)
 
 def plot_change_scale(request):
     data = dict(six.iterlists(request.GET))
