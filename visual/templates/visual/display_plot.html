@@ -1,18 +1,18 @@
 {% extends "visual/analysis_plot.html" %}
-{% block display %}
+{% block display_plot %}
 {% load tags %}
 <div class="ui celled grid">
-        <div class="thirteen wide column">
-            <h3 class="ui header">
-                <div class="content">
-                    Figure
-                    <div class="sub header">图形展示区域</div>
-                </div>
-            </h3>
-            <div class="ui divider"></div>
-            <div class="ui container">
-                <div id="total_trend" style="width:1000px; height:600px;"></div>
+    <div class="thirteen wide column">
+        <h3 class="ui header">
+            <div class="content">
+                Figure
+                <div class="sub header">图形展示区域</div>
             </div>
+        </h3>
+        <div class="ui divider"></div>
+        <div class="ui container">
+            <div id="total_trend" style="width:1000px; height:600px;"></div>
         </div>
+    </div>
 </div>
 {% endblock %}

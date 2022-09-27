@@ -2,25 +2,48 @@ from pyecharts.charts import Line, Bar, Scatter
 from pyecharts import options as opts
 from pyecharts.faker import Faker
 import numpy as np
-def echarts_mybar(df, x, y):
+# flag设为是否需要更改坐标轴范围，其余四个为横纵轴要更改的最大值及最小值
+def echarts_mybar(df, x, y, flag, y_axis_min, y_axis_max):
+# def echarts_mybar(df, x, y):
     df = df.iloc[:30, :]
     x_axis = np.array(df[x]).tolist()
     y_axis = np.array(df[y]).tolist()
     x_axis, y_axis = zip(*sorted(zip(x_axis, y_axis)))
-    bar = (
-        Bar()
-        .add_xaxis(x_axis)
-        .add_yaxis("纵坐标名字",y_axis)
-        .set_global_opts(title_opts=opts.TitleOpts(title="主标题", subtitle="副标题"),
-                         toolbox_opts=opts.ToolboxOpts(),
-                         datazoom_opts=opts.DataZoomOpts(is_show=True,
-                         range_start=0,  # 显示区域的开始位置，默认是20
-                         range_end=80,  # 显示区域的结束位置，默认是80
-                         orient='horizontal'  ##缩放区域空值条所放的位置
-                         )
+    if flag == 1:
+        bar = (
+            Bar()
+            .add_xaxis(x_axis)
+            .add_yaxis("纵坐标名字",y_axis)
+            .set_global_opts(yaxis_opts=opts.AxisOpts(
+                            min_ = y_axis_min,
+                            max_ = y_axis_max,
+                        ),
+                        title_opts=opts.TitleOpts(title="主标题", subtitle="副标题"),
+                             toolbox_opts=opts.ToolboxOpts(),
+                             datazoom_opts=opts.DataZoomOpts(is_show=True,
+                             range_start=0,  # 显示区域的开始位置，默认是20
+                             range_end=80,  # 显示区域的结束位置，默认是80
+                             orient='horizontal'  ##缩放区域空值条所放的位置
+                        )
+            )
+            .set_series_opts(label_opts=opts.LabelOpts(position='insideTop', color='white', font_size=12, is_show=False))
         )
-        .set_series_opts(label_opts=opts.LabelOpts(position='insideTop', color='white', font_size=12, is_show=False))
-    )
+    else:
+        bar = (
+            Bar()
+            .add_xaxis(x_axis)
+            .add_yaxis("纵坐标名字", y_axis)
+            .set_global_opts(
+                title_opts=opts.TitleOpts(title="主标题", subtitle="副标题"),
+                toolbox_opts=opts.ToolboxOpts(),
+                datazoom_opts=opts.DataZoomOpts(is_show=True,
+                                                range_start=0,  # 显示区域的开始位置，默认是20
+                                                range_end=80,  # 显示区域的结束位置，默认是80
+                                                orient='horizontal'  ##缩放区域空值条所放的位置
+                                                )
+            )
+            .set_series_opts(label_opts=opts.LabelOpts(position='insideTop', color='white', font_size=12, is_show=False))
+        )
     return bar
 
 def echarts_myscatter(df, x, y):
@@ -29,8 +52,7 @@ def echarts_myscatter(df, x, y):
     y_axis = np.array(df[y]).tolist()
     x_axis, y_axis = zip(*sorted(zip(x_axis, y_axis)))
     x_axis = [str(i) for i in x_axis]
-    # y_axis = [int(i) for i in y_axis]
-    print('===========',type(x_axis), type(y_axis),type(x_axis[0]), type(y_axis[0]),'===============')
+    print('===========',type(x_axis), type(y_axis),type(x_axis[0]), type(y_axis[0]),'============')
     scatter = (
         # 散点图
         # 初始化
@@ -54,7 +76,9 @@ def echarts_myscatter(df, x, y):
         # 全局配置项
         .set_global_opts(
         #     # x轴配置
-        #     xaxis_opts=opts.AxisOpts(
+            yaxis_opts=opts.AxisOpts(
+                # min_ = 1,
+                # max_ = 100,
         #         name='x轴',
         #         name_location='center',
         #         name_gap=15,
@@ -62,7 +86,7 @@ def echarts_myscatter(df, x, y):
         #         type_="value",
         #         # 分割线配置项
         #         splitline_opts=opts.SplitLineOpts(is_show=True)  # 显示分割线
-        #     ),
+            ),
         #     # y轴配置
         #     yaxis_opts=opts.AxisOpts(
         #         name='y轴',
