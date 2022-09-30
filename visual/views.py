@@ -203,6 +203,7 @@ def query(request):
 
     return HttpResponse(json.dumps(context, ensure_ascii=False),
                         content_type="application/json charset=utf-8")  # 返回结果必须是json格式
+
 global plot_type
 
 def plot(request):
@@ -221,7 +222,7 @@ def plot(request):
     try:
         chart = chart.dump_options()
         total_trend = json.loads(chart)
-    
+        # print(total_trend)
         context = {
             'total_trend': total_trend,
         }
@@ -262,17 +263,15 @@ def index(request, pth=pth):
     file_list = []
     file_dct = {}
     for file in os.listdir(pth):
-
         if os.path.splitext(file)[1] in ['.sas7bdat', '.jmp', '.csv']:
-
             file_list.append(file)
 
     dct = {file_name: file_name for file_name in file_list}
+
     for key, value in dct.items():
-
         file_dct[key] = {}
-
         file_dct[key]['select'] = value
+
     context = {
         'file_dct': file_dct
     }
