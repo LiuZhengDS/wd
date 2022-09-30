@@ -15,12 +15,12 @@
 <div id="HomePage" class="pusher" style="padding-top:50px" data-tab="HomePage">
     <div class="ui celled grid">
         <!-- 左边3/16为filter页面, include -->
-        <div class="three wide column">
+        <div class="five wide column">
             {% include 'visual/filter_plot.html' %}
         </div>
 
         <!-- 右边13/16为display页面, 预留block -->
-        <div class="thirteen wide column">
+        <div class="eleven wide column">
             {% block display_plot %}{% endblock display_plot %}
         </div>
     </div>

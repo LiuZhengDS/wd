@@ -61,3 +61,13 @@ b. 不提前load，每次前端选择后，load文件为python变量并调用
 
 ## 图片存在S3上 而不是box
 ## 哪些type 已经在用了 哪些还没有涉及
+
+# Sep 28 Monitoring 会议
+
+- monitor里面不修改数据类型（数据类型修改？都在预处理阶段完成），preprocess代码（自动化）
+- 主维度1，主维度2，辅助维度 变更为 主维度（单选），辅助维度（多选），legend（多选）
+- 要求主维度，辅助维度必须为numerical，legend为category
+- 页面设计成一页多图，一主多辅
+- fig1 volume和sigma能否通过添加箱图同时存在（pros）,但是legend多时，箱图会比较乱（cons）
+- filter 画图类型选择这个功能去掉，添加legend和辅助维度选择
+- export 图片 or 数据表格（预处理后的summary好了的）
